@@ -9,14 +9,14 @@ class StudentController {
 
     if (students.length > 0) {
       const data = {
-        message: "Menampilkkan semua students",
+        message: "Menampilkan semua students",
         data: students,
       };
 
       return res.status(200).json(data);
     } else {
       const data = {
-        message: "Students is empty",
+        message: "Data student kosong",
       };
 
       return res.status(404).json(data);
@@ -24,39 +24,37 @@ class StudentController {
   }
 
   async store(req, res) {
-    /**
-     * Validasi sederhana
-     * - Handle jika salah satu data tidak dikirim
-     */
 
-    // destructuring object req.body
-    const { name, nim, email, jurusan } = req.body;
-
-    if (!name || !nim || !email || !jurusan) {
+    // Debug data yang diterima
+  console.log("Received Body:", req.body);
+    // Ambil data dari body atau query string
+    const { nama, nim, email, jurusan } = req.body.nama ? req.body : req.query;
+  
+    if (!nama || !nim || !email || !jurusan) {
       const data = {
         message: "Semua field harus diisi",
       };
-
       return res.status(422).json(data);
-    } else {
-      const student = await Student.create(req.body);
-
-      const data = {
-        message: "Menambahkan student baru",
-        data: student,
-      };
-
-      return res.status(201).json(data);
     }
+  
+    const student = await Student.create({ nama, nim, email, jurusan });
+  
+    const data = {
+      message: "Menambahkan data student",
+      data: student,
+    };
+  
+    return res.status(201).json(data);
   }
+  
 
   async update(req, res) {
     const { id } = req.params;
-    // cari id student yang akan diupdate
+    // mencari student berdasarkan id untuk diupdate
     const student = await Student.find(id);
 
     if (student) {
-      // melakukan update data student
+      // melakukan proses update data student
       const students = await Student.update(req.body, id);
       const data = {
         message: `Mengedit student id ${id}`,
@@ -78,6 +76,7 @@ class StudentController {
     const student = await Student.find(id);
 
     if (student) {
+      // menghapus student berdasarkan id
       await Student.delete(id);
       const data = {
         message: `Menghapus student id ${id}`,

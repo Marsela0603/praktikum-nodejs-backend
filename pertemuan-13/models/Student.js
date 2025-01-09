@@ -39,7 +39,7 @@ class Student {
     return student;
   }
 
-  // mencari data student berdasarkan id
+  // mencari berdasarkan id student
   static find(id) {
     return new Promise((resolve, reject) => {
       const sql = "SELECT * from students WHERE id = ?";
@@ -51,7 +51,7 @@ class Student {
     });
   }
 
-  // mengupdate data student
+  // mengubah data student
   static async update(data, id) {
     data.updated_at = new Date();
     await new Promise((resolve, reject) => {
